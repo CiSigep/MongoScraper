@@ -10,9 +10,9 @@ const SCRAPE_URL = "https://www.globenewswire.com/";
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 // Models
-const Article = require("../model/Article");
+const db = require("../model");
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false });
 
 router.get("/api/article/scrape", (req, res) => {
     axios.get(SCRAPE_URL).then(response => {
@@ -32,8 +32,30 @@ router.get("/api/article/scrape", (req, res) => {
 });
 
 router.post("/api/article", (req, res) => {
-    Article.create(req.body)
+    db.Article.create(req.body)
         .then(dbArticle => res.status(201).json(dbArticle._id))
+        .catch(err => {
+            console.log(err);
+            res.status(500).end();
+        });
+});
+
+router.post("/api/article/:id", (req, res) => {
+    db.Note.create(req.body)
+        .then(dbNote => {
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: {notes: dbNote._id }}, { new: true });
+        })
+        .then(dbArticle => res.json(dbArticle))
+        .catch(err => {
+            console.log(err);
+            res.status(500).end();
+        });
+});
+
+router.get("/api/article/:id", (req, res) => {
+    db.Article.findOne({ _id: req.params.id })
+        .populate("notes")
+        .then(dbArticle => res.json(dbArticle))
         .catch(err => {
             console.log(err);
             res.status(500).end();
