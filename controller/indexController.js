@@ -14,6 +14,10 @@ const db = require("../model");
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false });
 
+router.get("/", (req, res) => {
+    res.render("index");
+});
+
 router.get("/api/article/scrape", (req, res) => {
     axios.get(SCRAPE_URL).then(response => {
         let $DOM = cheerio.load(response.data);
