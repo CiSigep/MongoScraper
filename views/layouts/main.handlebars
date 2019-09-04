@@ -1,24 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="w-100">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MongoScraper</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="/static/assets/css/style.css">
+    <title>Mongo Scraper</title>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/assets/css/style.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script src="/static/assets/js/script.js"></script>
 </head>
 
-<body>
-    {{{ body }}}
+<body class="w-100">
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+            <a href="/" class="navbar-brand">Mongo Scraper</a>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a href="/saved" class="nav-link">Saved</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="row w-100 mx-0">
+            <div class="col-12 text-center py-4 px-0">
+                <h1 class="display-5 w-100">
+                    Mongo Scraper <br>
+                    <small>Powered by GlobeNewswire</small>
+                </h1>
+            </div>
+        </div>
+        {{{ body }}}
+    </div>
 </body>
 
 </html>

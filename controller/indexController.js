@@ -15,15 +15,29 @@ const db = require("../model");
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false });
 
 router.get("/", (req, res) => {
-    res.render("index");
+    db.Article.find({})
+        .then((articles) => {
+            res.render("index", {
+                articles: articles,
+                available: articles.length > 0
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).end();
+        });
 });
+
+router.get("/saved", (req, res) => {
+    res.render("saved");
+})
 
 router.get("/api/article/scrape", (req, res) => {
     axios.get(SCRAPE_URL).then(response => {
         let $DOM = cheerio.load(response.data);
 
         // Get the data we want into an array.
-        let articleArray = $DOM("h1[class^=post-title]").map(function(i, ele) {
+        let articleArray = $DOM("h1[class^=post-title]").map(function (i, ele) {
             return {
                 title: $DOM(ele).children("a").text(),
                 url: SCRAPE_URL + $DOM(ele).children("a").attr("href"),
@@ -31,12 +45,18 @@ router.get("/api/article/scrape", (req, res) => {
             };
         }).get();
 
-        res.json(articleArray);
+        db.Article.insertMany(articleArray)
+            .then(() => res.json(articleArray))
+            .catch(err => {
+                console.log(err);
+                res.status(500).end()
+            });
+
     });
 });
 
 router.post("/api/article", (req, res) => {
-    db.Article.create(req.body)
+    db.SavedArticle.create(req.body)
         .then(dbArticle => res.status(201).json(dbArticle._id))
         .catch(err => {
             console.log(err);
@@ -47,7 +67,7 @@ router.post("/api/article", (req, res) => {
 router.post("/api/article/:id", (req, res) => {
     db.Note.create(req.body)
         .then(dbNote => {
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: {notes: dbNote._id }}, { new: true });
+            return db.SavedArticle.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id } }, { new: true });
         })
         .then(dbArticle => res.json(dbArticle))
         .catch(err => {
@@ -57,7 +77,7 @@ router.post("/api/article/:id", (req, res) => {
 });
 
 router.get("/api/article/:id", (req, res) => {
-    db.Article.findOne({ _id: req.params.id })
+    db.SavedArticle.findOne({ _id: req.params.id })
         .populate("notes")
         .then(dbArticle => res.json(dbArticle))
         .catch(err => {

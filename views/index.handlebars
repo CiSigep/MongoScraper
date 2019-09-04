@@ -1,3 +1,21 @@
-<nav class="navbar navbar-dark bg-primary border-bottom border-2 border-primary-dark">
-    <a href="#" class="navbar-brand">MongoScraper</a>
-</nav>
+<div class="row mb-2 w-100 mx-0">
+    <div class="col-12 text-center px-0">
+        <button id="scrape" class="btn btn-primary">Scrape Articles</button>
+        <button id="clearScraped" class="btn btn-danger">Clear Scraped Articles</button>
+    </div>
+</div>
+<div class="row w-100 mx-0">
+    <div class="col-12">
+        <div class="container">
+            {{#if available}}
+            
+            {{else}}
+                <div class="card">
+                    <div class="card-body">
+                        It seems there is nothing here, scrape some articles.
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>

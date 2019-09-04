@@ -1,4 +1,8 @@
+const Article = require("./Article");
+const mongoose = require("mongoose");
+
 module.exports = {
     Note: require("./Note"),
-    Article: require("./Article")
+    Article: mongoose.model("Article", Article),
+    SavedArticle: mongoose.model("SavedArticle", Article)
 };
