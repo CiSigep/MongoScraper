@@ -55,6 +55,15 @@ router.get("/api/article/scrape", (req, res) => {
     });
 });
 
+router.delete("/api/article/scrape", (req, res) => {
+    db.Article.deleteMany({})
+        .then(() => res.json(true))
+        .catch(err => {
+            console.log(err);
+            res.status(500).end();
+        });
+});
+
 router.post("/api/article", (req, res) => {
     db.SavedArticle.create(req.body)
         .then(dbArticle => res.status(201).json(dbArticle._id))
