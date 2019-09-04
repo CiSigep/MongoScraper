@@ -6,16 +6,16 @@
 </div>
 <div class="row w-100 mx-0">
     <div class="col-12">
-        <div class="container">
+        <div id="articleContainer" class="container">
             {{#if available}}
             {{#each articles}}
                 <div class="card mb-2">
                     <div class="card-header">
-                        <a href="{{url}}">{{title}}</a>
+                        <a id="title-{{@index}}" href="{{url}}">{{title}}</a>
                     </div>
                     <div class="card-body">
-                        <div>{{summary}}</div>
-                        <div class="text-right"><button class="btn btn-success">Save</button></div>
+                        <div class="summary-{{@index}}">{{summary}}</div>
+                        <div class="text-right"><button data-which="{{@index}}" class="saveBtn btn btn-success">Save</button></div>
                     </div>
                 </div>
             {{/each}}

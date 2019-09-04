@@ -33,26 +33,33 @@ router.get("/saved", (req, res) => {
 })
 
 router.get("/api/article/scrape", (req, res) => {
-    axios.get(SCRAPE_URL).then(response => {
-        let $DOM = cheerio.load(response.data);
-
-        // Get the data we want into an array.
-        let articleArray = $DOM("h1[class^=post-title]").map(function (i, ele) {
-            return {
-                title: $DOM(ele).children("a").text(),
-                url: SCRAPE_URL + $DOM(ele).children("a").attr("href"),
-                summary: $DOM(ele).next("p").text()
-            };
-        }).get();
-
-        db.Article.insertMany(articleArray)
-            .then(() => res.json(articleArray))
-            .catch(err => {
-                console.log(err);
-                res.status(500).end()
+    db.Article.deleteMany({})
+        .then(() => {
+            axios.get(SCRAPE_URL).then(response => {
+                let $DOM = cheerio.load(response.data);
+        
+                // Get the data we want into an array.
+                let articleArray = $DOM("h1[class^=post-title]").map(function (i, ele) {
+                    return {
+                        title: $DOM(ele).children("a").text(),
+                        url: SCRAPE_URL + $DOM(ele).children("a").attr("href"),
+                        summary: $DOM(ele).next("p").text()
+                    };
+                }).get();
+        
+                db.Article.insertMany(articleArray)
+                    .then(() => res.json(articleArray))
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).end();
+                    });
+        
             });
-
-    });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).end();
+        });
 });
 
 router.delete("/api/article/scrape", (req, res) => {
