@@ -3,3 +3,7 @@
     font-weight: 300;
     line-height: 1.2;
 }
+
+textarea {
+    resize: none !important;
+}

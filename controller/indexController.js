@@ -112,12 +112,43 @@ router.delete("/api/article/saved", (req, res) => {
         });
 });
 
+router.delete("/api/article/saved/:id", (req, res) => {
+    db.SavedArticle.findByIdAndRemove(req.params.id).lean().then(article => {
+        db.Note.deleteMany({ _id: {$in: article.notes}})
+            .then(data => res.json(true))
+            .catch(err => {
+                console.log(err);
+                res.status(500).end();
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).end();
+    });
+});
+
+router.delete("/api/note/:id", (req, res) => {
+    let idObject = new mongoose.Types.ObjectId(req.params.id);
+    db.Note.findByIdAndRemove(req.params.id)
+        .then(note => {
+            db.SavedArticle.findOneAndUpdate({notes: idObject}, { $pull: { notes: idObject }})
+            .then(data => res.json(true)).catch(err => {
+                console.log(err);
+                res.status(500).end();
+        });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).end();
+    });
+});
+
 router.post("/api/article/:id", (req, res) => {
+    let note;
     db.Note.create(req.body)
         .then(dbNote => {
+            note = dbNote;
             return db.SavedArticle.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id } }, { new: true });
         })
-        .then(dbArticle => res.json(dbArticle))
+        .then(data => res.status(201).json(note))
         .catch(err => {
             console.log(err);
             res.status(500).end();
