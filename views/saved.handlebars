@@ -1,0 +1,42 @@
+<div class="row w-100 mx-0">
+    <div class="col-12 text-center py-4 px-0">
+        <h1 class="display-5 w-100">
+            Mongo Scraper <br>
+            <small>Your saved articles</small>
+        </h1>
+    </div>
+</div>
+<div class="row mb-2 w-100 mx-0">
+    <div class="col-12 text-center px-0">
+        <button id="clearSaved" class="btn btn-danger">Clear Saved Articles</button>
+    </div>
+</div>
+<div class="row w-100 mx-0">
+    <div class="col-12">
+        <div id="articleContainer" class="container">
+            {{#if available}}
+            {{#each articles}}
+            <div class="card mb-2">
+                <div class="card-header">
+                    <a id="title-{{@index}}" href="{{url}}">{{title}}</a>
+                </div>
+                <div class="card-body">
+                    <div class="summary-{{@index}}">{{summary}}</div>
+                    <div class="text-right">
+                        <button data-which="{{@index}}" class="noteBtn btn btn-info">Notes</button>
+                        <button data-which="{{@index}}" class="deleteBtn btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+            {{else}}
+            <div class="card">
+                <div class="card-body">
+                    It seems there is nothing here, save some articles.
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+<script src="/static/assets/js/savedScript.js"></script>

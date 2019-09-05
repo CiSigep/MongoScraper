@@ -29,7 +29,16 @@ router.get("/", (req, res) => {
 });
 
 router.get("/saved", (req, res) => {
-    res.render("saved");
+    db.SavedArticle.find({}).then((articles) => {
+        res.render("saved", {
+            articles: articles,
+            available: articles.length > 0
+        });
+    })
+    .catch((err) => {
+        console.log(err);
+        res.status(500).end();
+    });
 })
 
 router.get("/api/article/scrape", (req, res) => {
@@ -48,7 +57,7 @@ router.get("/api/article/scrape", (req, res) => {
                 }).get();
         
                 db.Article.insertMany(articleArray)
-                    .then(() => res.json(articleArray))
+                    .then((dbArticles) => res.json(dbArticles))
                     .catch(err => {
                         console.log(err);
                         res.status(500).end();
@@ -72,8 +81,31 @@ router.delete("/api/article/scrape", (req, res) => {
 });
 
 router.post("/api/article", (req, res) => {
-    db.SavedArticle.create(req.body)
-        .then(dbArticle => res.status(201).json(dbArticle._id))
+    db.Article.findByIdAndDelete(req.body.scrapeId)
+        .then(() => {
+            db.SavedArticle.create(req.body)
+            .then(dbArticle => res.status(201).json(dbArticle._id))
+            .catch(err => {
+                console.log(err);
+                res.status(500).end();
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).end();
+    });
+    
+});
+
+router.delete("/api/article/saved", (req, res) => {
+    db.SavedArticle.deleteMany({})
+        .then(data => {
+            db.Note.deleteMany({})
+            .then(data => res.json(true))
+            .catch(err => {
+                console.log(err);
+                res.status(500).end();
+            });
+        })
         .catch(err => {
             console.log(err);
             res.status(500).end();

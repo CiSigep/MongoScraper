@@ -1,3 +1,11 @@
+<div class="row w-100 mx-0">
+    <div class="col-12 text-center py-4 px-0">
+        <h1 class="display-5 w-100">
+            Mongo Scraper <br>
+            <small>Powered by GlobeNewswire</small>
+        </h1>
+    </div>
+</div>
 <div class="row mb-2 w-100 mx-0">
     <div class="col-12 text-center px-0">
         <button id="scrape" class="btn btn-primary">Scrape Articles</button>
@@ -9,23 +17,25 @@
         <div id="articleContainer" class="container">
             {{#if available}}
             {{#each articles}}
-                <div class="card mb-2">
-                    <div class="card-header">
-                        <a id="title-{{@index}}" href="{{url}}">{{title}}</a>
-                    </div>
-                    <div class="card-body">
-                        <div class="summary-{{@index}}">{{summary}}</div>
-                        <div class="text-right"><button data-which="{{@index}}" class="saveBtn btn btn-success">Save</button></div>
-                    </div>
+            <div id="article-{{@index}}" class="card mb-2">
+                <div class="card-header">
+                    <a id="title-{{@index}}" href="{{url}}">{{title}}</a>
                 </div>
+                <div class="card-body">
+                    <div id="summary-{{@index}}">{{summary}}</div>
+                    <div class="text-right"><button data-which="{{@index}}" data-id="{{_id}}"
+                            class="saveBtn btn btn-success">Save</button></div>
+                </div>
+            </div>
             {{/each}}
             {{else}}
-                <div class="card">
-                    <div class="card-body">
-                        It seems there is nothing here, scrape some articles.
-                    </div>
+            <div class="card">
+                <div class="card-body">
+                    It seems there is nothing here, scrape some articles.
                 </div>
+            </div>
             {{/if}}
         </div>
     </div>
 </div>
+<script src="/static/assets/js/indexScript.js"></script>
