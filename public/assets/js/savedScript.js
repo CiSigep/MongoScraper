@@ -1,4 +1,5 @@
 $(() => {
+    // Clears out the saved articles
     $("#clearSaved").on("click", function () {
         $.ajax({
             url: "/api/article/saved",
@@ -11,6 +12,7 @@ $(() => {
         });
     });
 
+    // Deletes a saved article
     $(".deleteBtn").on("click", function () {
         $.ajax({
             url: "/api/article/saved/" + $(this).attr("data-id"),
@@ -26,6 +28,7 @@ $(() => {
         });
     });
 
+    // Gets the notes for an article
     $(".noteBtn").on("click", function () {
         $.ajax({
             url: "/api/article/" + $(this).attr("data-id"),
@@ -46,6 +49,7 @@ $(() => {
         });
     });
 
+    // Saves a note for the article
     $("#noteSave").on("click", function () {
         let text = $("#noteInput").val();
         
@@ -63,6 +67,7 @@ $(() => {
         });
     });
 
+    // Deletes a note for the article
     $(document).on("click", ".noteDelete", function () {
         let button = $(this);
         $.ajax({

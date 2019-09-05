@@ -1,4 +1,5 @@
 $(() => {
+    // Scrape some articles
     $("#scrape").on("click", function () {
         $.ajax({
             url: "/api/article/scrape",
@@ -6,6 +7,8 @@ $(() => {
         }).done(data => {
             let articleContainer = $("#articleContainer");
             articleContainer.empty();
+            
+            // Write the data to the page
             data.forEach((ele, idx) => {
                 let cardDiv = $("<div>").addClass("card mb-2").attr("id", "article-" + idx);
 
@@ -22,6 +25,7 @@ $(() => {
         });
     });
 
+    // Clear out the scraped articles
     $("#clearScraped").on("click", function () {
         $.ajax({
             url: "/api/article/scrape",
@@ -34,6 +38,7 @@ $(() => {
         });
     });
 
+    // Save an article
     $(document).on("click", ".saveBtn", function () {
         let which = $(this).attr("data-which");
 

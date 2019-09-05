@@ -14,7 +14,11 @@ const db = require("../model");
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false });
 
+// Routes
+
+// Get all scraped articles, then render the page to the user
 router.get("/", (req, res) => {
+    
     db.Article.find({})
         .then((articles) => {
             res.render("index", {
@@ -28,6 +32,7 @@ router.get("/", (req, res) => {
         });
 });
 
+// Get all saved articles, then render the saved page to the user
 router.get("/saved", (req, res) => {
     db.SavedArticle.find({}).then((articles) => {
         res.render("saved", {
@@ -41,6 +46,7 @@ router.get("/saved", (req, res) => {
     });
 })
 
+// Scrape the news site for articles
 router.get("/api/article/scrape", (req, res) => {
     db.Article.deleteMany({})
         .then(() => {
@@ -71,6 +77,7 @@ router.get("/api/article/scrape", (req, res) => {
         });
 });
 
+// Clear out the scraped articles
 router.delete("/api/article/scrape", (req, res) => {
     db.Article.deleteMany({})
         .then(() => res.json(true))
@@ -80,9 +87,12 @@ router.delete("/api/article/scrape", (req, res) => {
         });
 });
 
+// Save an article from scraped to saved
 router.post("/api/article", (req, res) => {
+    // Remove article from scraped
     db.Article.findByIdAndDelete(req.body.scrapeId)
         .then(() => {
+            // Add article to saved
             db.SavedArticle.create(req.body)
             .then(dbArticle => res.status(201).json(dbArticle._id))
             .catch(err => {
@@ -96,9 +106,11 @@ router.post("/api/article", (req, res) => {
     
 });
 
+// Delete all saved articles
 router.delete("/api/article/saved", (req, res) => {
     db.SavedArticle.deleteMany({})
         .then(data => {
+            // Delete the articles notes as well
             db.Note.deleteMany({})
             .then(data => res.json(true))
             .catch(err => {
@@ -112,6 +124,7 @@ router.delete("/api/article/saved", (req, res) => {
         });
 });
 
+// Delete a single saved article
 router.delete("/api/article/saved/:id", (req, res) => {
     db.SavedArticle.findByIdAndRemove(req.params.id).lean().then(article => {
         db.Note.deleteMany({ _id: {$in: article.notes}})
@@ -126,6 +139,7 @@ router.delete("/api/article/saved/:id", (req, res) => {
     });
 });
 
+// Delete a note
 router.delete("/api/note/:id", (req, res) => {
     let idObject = new mongoose.Types.ObjectId(req.params.id);
     db.Note.findByIdAndRemove(req.params.id)
@@ -141,6 +155,7 @@ router.delete("/api/note/:id", (req, res) => {
     });
 });
 
+// Add a note to an article
 router.post("/api/article/:id", (req, res) => {
     let note;
     db.Note.create(req.body)
@@ -155,6 +170,7 @@ router.post("/api/article/:id", (req, res) => {
         });
 });
 
+// Get the notes for an article
 router.get("/api/article/:id", (req, res) => {
     db.SavedArticle.findOne({ _id: req.params.id })
         .populate("notes")
